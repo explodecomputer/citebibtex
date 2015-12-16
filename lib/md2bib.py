@@ -14,7 +14,8 @@ import logging
 import re
 
 
-BIBKEY_PAT = '([.:;,\-\w]+)'
+# BIBKEY_PAT = '([.:;,\-\w]+)'
+BIBKEY_PAT = '([.:,\-\w]+)'
 
 
 def parse_bibtex(text):
@@ -75,24 +76,25 @@ def get_keys_from_document(filename):
     `\cite*{key}` style, where `*` can be any character or none.
 
     """
-    k_md = '\[@' + BIBKEY_PAT + '\]|(?<!\[)@' + BIBKEY_PAT
+    # k_md = '\[@' + BIBKEY_PAT + '\]|(?<!\[)@' + BIBKEY_PAT
+    k_md = '@' + BIBKEY_PAT
     k_latex = '\\cite.?\[?(?:.+?)?\]?\{' + BIBKEY_PAT + '\}'
 
     text = open(filename, 'r', encoding='utf-8').read()
-    md = re.findall(k_md, text)
-    md_brackets, md_intext = list(zip(*md))
-    md_brackets, md_intext = list(md_brackets), list(md_intext)
+    matches = re.findall(k_md, text)
+    # md_brackets, md_intext = list(zip(*md))
+    # md_brackets, md_intext = list(md_brackets), list(md_intext)
 
-    matches = []
-    # Split up finds if necessary to deal with [@key0; @key1]
-    for f in md_brackets:
-        if '@' in f:
-            sub_f = f.replace(' ', '').replace('@', '').split(';')
-            matches.extend(sub_f)
-        elif f != '':
-            matches.append(f)
+    # matches = []
+    # # Split up finds if necessary to deal with [@key0; @key1]
+    # for f in md_brackets:
+    #     if '@' in f:
+    #         sub_f = f.replace(' ', '').replace('@', '').split(';')
+    #         matches.extend(sub_f)
+    #     elif f != '':
+    #         matches.append(f)
 
-    matches.extend([i for i in md_intext if i != ''])
+    # matches.extend([i for i in md_intext if i != ''])
 
     latex = re.findall(k_latex, text)
     for f in latex:
